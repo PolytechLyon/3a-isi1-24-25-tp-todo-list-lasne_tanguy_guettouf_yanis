@@ -9,38 +9,63 @@ const editInput = document.getElementById("edit-todo-item-title");
 
 let itemToEdit;
 
-addButton.addEventListener('click', () => {
-    const item = inputTodo.value.trim()
-    if (item !== ''){
-        const listItem = document.createElement('li');
-        const textSpan = document.createElement('span');
+function loadTodos() {
+    const todos = JSON.parse(localStorage.getItem("todos")) || [];
+    todos.forEach(todo => addTodoToDOM(todo.text, todo.id));
+}
 
-        textSpan.textContent = item
-        inputTodo.value = '';
+function saveTodos() {
+    const todos = [];
+    document.querySelectorAll("#todo-list li").forEach(li => {
+      const text = li.querySelector("span").textContent;
+      const id = li.dataset.id;
+      todos.push({ text, id });
+    });
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
 
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => {
-            todoList.removeChild(listItem);
-        });
 
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        
-        editButton.addEventListener('click', () => {
-            editItemDiv.hidden = false;
-            newItemDiv.hidden = true;
+function addTodoToDOM(todoText, id = Date.now()){
+    const listItem = document.createElement('li');
 
-            editInput.value = textSpan.textContent;
-            itemToEdit = textSpan;
-        });
+    listItem.dataset.id = id;
 
-        listItem.appendChild(textSpan)
-        listItem.appendChild(deleteButton);
-        listItem.appendChild(editButton);
-        todoList.appendChild(listItem);
+    const textSpan = document.createElement('span');
+    textSpan.textContent = todoText
+    inputTodo.value = '';
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', () => {
+        todoList.removeChild(listItem);
+        saveTodos();
+    });
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    
+    editButton.addEventListener('click', () => {
+        editItemDiv.hidden = false;
+        newItemDiv.hidden = true;
+
+        editInput.value = textSpan.textContent;
+        itemToEdit = textSpan;
+    });
+
+    listItem.appendChild(textSpan)
+    listItem.appendChild(deleteButton);
+    listItem.appendChild(editButton);
+    todoList.appendChild(listItem);
+};
+
+addButton.addEventListener("click", () => {
+    const todoText = inputTodo.value.trim();
+    if (todoText !== "") {
+      addTodoToDOM(todoText);
+      saveTodos();
+      inputTodo.value = "";
     }
-});
+  });
 
 editCancel.addEventListener('click', () => {
     editInput.value = '';
@@ -52,9 +77,12 @@ editConfirm.addEventListener('click', () => {
     const newTodo = editInput.value.trim();
     if (newTodo !== '' && itemToEdit) {
         itemToEdit.textContent = newTodo;
+        saveTodos();
         editInput.value = '';
         itemToEdit = null;
         editItemDiv.hidden = true;
         newItemDiv.hidden = false;
     }
 });
+
+loadTodos();
