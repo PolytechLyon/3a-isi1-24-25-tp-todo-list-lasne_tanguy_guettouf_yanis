@@ -7,7 +7,7 @@ const editConfirm = document.getElementById("edit-todo-item-confirm");
 const editCancel = document.getElementById("edit-todo-item-cancel");
 const editInput = document.getElementById("edit-todo-item-title");
 
-
+let itemToEdit;
 
 addButton.addEventListener('click', () => {
     const item = inputTodo.value.trim()
@@ -31,8 +31,7 @@ addButton.addEventListener('click', () => {
             editItemDiv.hidden = false;
             newItemDiv.hidden = true;
 
-            text = textSpan.textContent;
-            editInput.value = text;
+            editInput.value = textSpan.textContent;
             itemToEdit = textSpan;
         });
 
