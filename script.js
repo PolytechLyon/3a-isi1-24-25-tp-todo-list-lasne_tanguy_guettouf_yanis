@@ -52,23 +52,6 @@ editCancel.addEventListener('click', () => {
 editConfirm.addEventListener('click', () => {
     const newTodo = editInput.value.trim();
     if (newTodo !== '' && itemToEdit) {
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => {
-            todoList.removeChild(listItem);
-        });
-
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.addEventListener('click', () => {
-            editItemDiv.hidden = false;
-            newItemDiv.hidden = true;
-
-            text = listItem.textContent.slice(0,-10)
-            editInput.value = text;
-            itemToEdit = listItem;
-        });
-
         itemToEdit.textContent = newTodo;
         editInput.value = '';
         itemToEdit = null;
